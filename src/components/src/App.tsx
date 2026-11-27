@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 
 const API = "https://api.coingecko.com/api/v3";
 const telegramUrl = "https://t.me/ItalNovaCrypto";
-type Coin = { id: string; symbol: string; name: string; image: string; current_price: number; market_cap: number; market_cap_rank: number; total_volume: number; price_change_percentage_24h: number; sparkline_in_7d?: { price: number[] } };
+type Coin = { id: string; symbol: string; name: string; image: string; current_price: number; market_cap: number; market_cap_rank: number; total_volume: number; high_24h: number; low_24h: number; price_change_percentage_24h: number; sparkline_in_7d?: { price: number[] } };
 type Point = [number, number];
 const ranges = [{ label: "24H", days: "1" }, { label: "7D", days: "7" }, { label: "1M", days: "30" }, { label: "1Y", days: "365" }];
 const money = (n?: number) => n == null ? "—" : new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: n < 1 ? 6 : 2 }).format(n);
@@ -107,7 +107,7 @@ export default function App() {
           {active && <div className="chart-change"><span className={(active.price_change_percentage_24h || 0) >= 0 ? "up" : "down"}>{pct(active.price_change_percentage_24h)} <small>24H</small></span><span>Market rank #{active.market_cap_rank}</span></div>}
           <div className="range-tabs">{ranges.map(r => <button key={r.days} className={days === r.days ? "range-active" : ""} onClick={() => setDays(r.days)}>{r.label}</button>)}</div>
           <div className="chart-wrap">{chartLoading ? <div className="chart-empty">Loading chart…</div> : <LineChart points={points}/>}</div>
-          {active && <div className="chart-stats"><div><span>24H HIGH / LOW</span><b>{money(active.current_price * 1.025)} / {money(active.current_price * .975)}</b></div><div><span>24H VOLUME</span><b>{money(active.total_volume)}</b></div></div>}
+          {active && <div className="chart-stats"><div><span>24H HIGH / LOW</span><b>{money(active.high_24h)} / {money(active.low_24h)}</b></div><div><span>24H VOLUME</span><b>{money(active.total_volume)}</b></div></div>}
           <p className="chart-note">Historical prices are supplied by CoinGecko. Chart values represent market data, not a trading recommendation.</p>
         </aside>
       </div>
