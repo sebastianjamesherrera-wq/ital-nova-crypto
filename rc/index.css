@@ -1,0 +1,71 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: Inter, Arial, sans-serif;
+  color-scheme: dark;
+  background: #080b12;
+  color: #ffffff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+.glass-panel {
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(16px);
+}
+
+.glow-positive {
+  box-shadow: 0 0 25px rgba(34, 197, 94, 0.12);
+}
+
+@keyframes activity-pop {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes activity-float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+@keyframes activity-progress {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+.animate-activity-pop,
+.animate-activity-pop-rtl {
+  animation: activity-pop 0.5s ease both;
+}
+
+.animate-activity-float {
+  animation: activity-float 3s ease-in-out infinite;
+}
+
+.animate-activity-progress {
+  animation: activity-progress 4s linear;
+}
