@@ -9,3 +9,55 @@
 @media(max-width:1000px){.hero-orbit{right:5%;transform:scale(.8);transform-origin:center right;opacity:.65}.hero-content{max-width:570px}.market-layout{grid-template-columns:1fr}.chart-panel{max-width:none}.chart-wrap{height:240px}}
 @media(max-width:700px){.topbar{height:67px;padding:0 5vw}.topbar nav{display:none}.community-link{font-size:10px;padding:10px}.hero{min-height:600px;padding:95px 7vw 90px}.hero h1{font-size:clamp(43px,11vw,65px)}.hero-orbit{right:-150px;top:170px;transform:scale(.65);opacity:.35}.hero-foot{left:7vw;right:7vw;font-size:8px;gap:15px}.market-strip{padding:22px 7vw;grid-template-columns:1fr 1fr;gap:22px 15px}.market-strip span{font-size:8px}.market-strip strong{font-size:16px}.markets-section{padding:72px 5vw}.section-heading{align-items:flex-start;flex-direction:column}.updated{align-self:flex-start}.table-toolbar{align-items:flex-start;flex-direction:column}.table-toolbar input{width:100%}.chart-panel{padding:17px}.chart-head>strong{font-size:15px}.insights-section{padding:75px 7vw}.insight-grid{grid-template-columns:1fr}.insight-grid article{min-height:150px}.community-section{padding:75px 7vw}.community-mark{display:none}footer{padding:27px 7vw;flex-wrap:wrap}footer .brand{width:100%}.disclaimer{padding:0 7vw 25px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+/* ITAL NOVA premium gold refresh */
+:root{--green:#d8b66a;--gold:#d8b66a;--muted:#9a9a9a}
+body{background:#08090b;color:#f5f1e8}
+.topbar{background:rgba(8,9,11,.94)}
+.brand b,.eyebrow,.hero h1 span,h2 span,.community-link,.updated button,.insight-icon,footer>a:last-child{color:var(--gold)}
+.brand-icon{border-color:var(--gold);color:var(--gold)}
+.community-link{border-color:rgba(216,182,106,.55)}
+.hero{background:radial-gradient(ellipse at 78% 42%,rgba(177,133,57,.18),transparent 38%),linear-gradient(120deg,#08090b,#17130d)}
+.hero-orbit{border-color:rgba(216,182,106,.2);animation:orbitFloat 18s linear infinite}
+.orbit-core{background:linear-gradient(145deg,#f1d99b,#9d7432);box-shadow:0 0 60px rgba(216,182,106,.3)}
+.orbit-coin{border-color:rgba(216,182,106,.55);color:var(--gold)}
+@keyframes orbitFloat{to{transform:rotate(360deg)}}
+.primary-btn{background:linear-gradient(110deg,#f0d99d,#bd9147);color:#17120a;transition:transform .25s,filter .25s}
+.primary-btn:hover{filter:brightness(1.12);transform:translateY(-2px)}
+.live-dot,.eyebrow i{background:var(--gold);box-shadow:0 0 12px var(--gold)}
+.market-strip,.insights-section{background:#101114}
+.market-strip strong,.price-cell{color:#f3ead7}
+.up{color:#b7d98c!important}
+.selected-row{background:rgba(216,182,106,.075)}
+tbody tr:hover{background:rgba(216,182,106,.09)}
+.table-toolbar input:focus{border-color:var(--gold)}
+.range-tabs button.range-active{background:rgba(216,182,106,.16);color:var(--gold)}
+.chart-note,.table-foot{color:#96918a}
+.community-section{background:radial-gradient(ellipse at 75% 50%,rgba(216,182,106,.1),transparent 40%)}
+.community-mark{color:var(--gold);border-color:rgba(216,182,106,.4)}
+.trade-section{padding:100px 10vw;display:grid;grid-template-columns:1fr minmax(320px,480px);gap:7vw;align-items:center;background:linear-gradient(135deg,#0c0d10,#15120d);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.trade-intro h2,.about-section h2{font-size:clamp(40px,5vw,60px);line-height:1.08;letter-spacing:-.06em;margin:22px 0}
+.trade-intro p,.about-section p{max-width:440px;color:var(--muted);font-size:13px;line-height:1.9}
+.trade-security{display:flex;align-items:center;gap:13px;margin-top:34px;color:var(--gold)}
+.trade-security>span{font-size:25px}.trade-security div{display:flex;flex-direction:column;gap:5px}.trade-security b{font-size:12px}.trade-security small{font-size:10px;color:var(--muted)}
+.trade-card{background:#111317;border:1px solid rgba(216,182,106,.24);border-radius:14px;overflow:hidden;box-shadow:0 25px 80px rgba(0,0,0,.3)}
+.trade-tabs{display:grid;grid-template-columns:repeat(3,1fr);padding:9px;background:#0a0b0d;border-bottom:1px solid var(--line)}
+.trade-tabs button{border:0;background:transparent;color:#92908b;padding:14px 8px;font-size:12px;cursor:pointer;border-radius:7px}
+.trade-tabs button.trade-active{background:rgba(216,182,106,.14);color:var(--gold);font-weight:800}
+.trade-form{padding:25px}
+.trade-form label{display:block;font:9px 'DM Mono',monospace;letter-spacing:.13em;color:#a7a096;margin:17px 0 9px}
+.amount-field,.asset-select{display:flex;align-items:center;justify-content:space-between;background:#090a0c;border:1px solid rgba(255,255,255,.1);border-radius:7px;padding:13px 14px;gap:12px}
+.amount-field input{width:100%;min-width:0;border:0;outline:0;background:transparent;color:#f6f0e3;font-size:20px;font-weight:700}
+.amount-field span{color:var(--gold);font:11px 'DM Mono',monospace}
+.asset-select select{width:60%;min-width:0;border:0;outline:0;background:transparent;color:#f4efe5;font-size:12px}
+.asset-select option{background:#111317}.asset-select b{font-size:11px;color:#d8c59d}
+.swap-divider{text-align:center;color:var(--gold);font-size:19px;margin:8px}
+.estimate{display:flex;justify-content:space-between;align-items:center;gap:12px;border-top:1px solid var(--line);margin-top:22px;padding-top:18px}
+.estimate span{font:9px 'DM Mono',monospace;color:#99948b;letter-spacing:.1em}.estimate strong{font-size:14px;color:var(--gold);text-align:right}
+.quote-btn{width:100%;border:0;border-radius:6px;margin-top:20px;padding:15px;background:linear-gradient(110deg,#f0d99d,#bd9147);color:#17120a;font-weight:800;font-size:12px;cursor:pointer}
+.quote-btn:disabled{opacity:.45;cursor:not-allowed}.quote-btn span{float:right}
+.quote-message{display:flex;flex-direction:column;gap:5px;margin-top:14px;padding:12px;border:1px solid rgba(183,217,140,.25);background:rgba(183,217,140,.06);border-radius:6px;color:#c4dfa3;font-size:11px}.quote-message span{color:#a6a69d;line-height:1.5}
+.trade-footnote{font-size:9px;line-height:1.7;color:#88857f;margin:17px 0 0}
+.about-section{padding:100px 12vw;background:radial-gradient(ellipse at 80% 30%,rgba(216,182,106,.08),transparent 42%)}
+@media(max-width:850px){.trade-section{grid-template-columns:1fr;padding:75px 7vw;gap:35px}.trade-card{max-width:560px;width:100%}.about-section{padding:75px 7vw}}
+@media(prefers-reduced-motion:reduce){.hero-orbit{animation:none}}
