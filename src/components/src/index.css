@@ -108,3 +108,23 @@ footer{background:#08090b}
 @keyframes chartEnter{from{opacity:.35;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 @media(max-width:700px){.hero{min-height:620px}.hero-orbit{animation:none}.market-strip>div{min-width:0}.trade-card:hover{transform:none}}
 @media(prefers-reduced-motion:reduce){.hero-content,.orbit-coin,.chart-svg{animation:none!important}.brand-icon,.table-panel,.chart-panel,.trade-card,tbody tr{transition:none!important}}
+
+/* Global investor showcase replacing the trade preview */
+.investor-section{padding:100px 7vw;display:grid;grid-template-columns:minmax(300px,.8fr) minmax(420px,1.2fr);gap:5vw;align-items:center;background:radial-gradient(ellipse at 20% 50%,rgba(216,182,106,.09),transparent 45%),#0b0c0e;border-top:1px solid var(--line);overflow:hidden}
+.investor-copy h2{font-size:clamp(38px,5vw,60px);line-height:1.08;letter-spacing:-.06em;margin:22px 0}
+.investor-copy p{max-width:430px;color:var(--muted);font-size:13px;line-height:1.9}
+.investor-points{display:flex;flex-wrap:wrap;gap:10px 18px;margin-top:35px;color:#b7a47c;font:9px 'DM Mono',monospace;letter-spacing:.08em}
+.investor-visual{min-height:440px;position:relative;border:1px solid rgba(216,182,106,.3);border-radius:15px;overflow:hidden;background:#17130e;box-shadow:0 25px 80px rgba(0,0,0,.42)}
+.investor-visual>img{position:absolute;width:100%;height:100%;inset:0;object-fit:cover;object-position:center;filter:brightness(.68) saturate(.8)}
+.investor-shade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(5,7,10,.14),rgba(5,7,10,.05) 40%,rgba(5,7,10,.62)),linear-gradient(0deg,rgba(5,7,10,.65),transparent 55%)}
+.analyst-screen{position:absolute;right:5%;top:12%;width:54%;padding:18px 18px 14px;border:1px solid rgba(230,194,119,.65);border-radius:10px;background:rgba(7,13,22,.88);backdrop-filter:blur(12px);box-shadow:0 18px 50px rgba(0,0,0,.4)}
+.screen-top,.screen-bottom{display:flex;justify-content:space-between;align-items:center;gap:10px;font:8px 'DM Mono',monospace;letter-spacing:.08em;color:#aab4c1}
+.screen-top i{font-style:normal;color:#d8b66a}
+.screen-title{font-size:17px;font-weight:700;margin:17px 0 6px;color:#f6f0e3}
+.screen-chart{height:150px;background:repeating-linear-gradient(0deg,transparent 0 36px,rgba(255,255,255,.08) 37px),repeating-linear-gradient(90deg,transparent 0 65px,rgba(255,255,255,.06) 66px)}
+.screen-chart svg{width:100%;height:100%;overflow:visible}
+.screen-bottom{border-top:1px solid rgba(255,255,255,.12);padding-top:12px;margin-top:8px}
+.screen-bottom b{color:#e2c17e;font-weight:500}
+.investor-caption{position:absolute;left:24px;bottom:22px;color:#f0d99d;font:9px 'DM Mono',monospace;letter-spacing:.16em;text-shadow:0 2px 12px #000}
+@media(max-width:900px){.investor-section{grid-template-columns:1fr;padding:80px 7vw;gap:32px}.investor-visual{min-height:400px}}
+@media(max-width:560px){.investor-section{padding:70px 5vw}.investor-visual{min-height:360px}.analyst-screen{width:68%;right:4%;top:10%;padding:12px}.screen-chart{height:115px}.investor-caption{left:15px;bottom:16px;font-size:7px}.investor-points{font-size:8px}}
