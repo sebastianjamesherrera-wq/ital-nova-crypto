@@ -29,14 +29,8 @@ export default function App() {
   const [query, setQuery] = useState(""), [loading, setLoading] = useState(true), [chartLoading, setChartLoading] = useState(true);
   const [error, setError] = useState(""), [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [global, setGlobal] = useState<{ total_market_cap?: { usd: number }; total_volume?: { usd: number }; market_cap_change_percentage_24h_usd?: number; active_cryptocurrencies?: number } | null>(null);
-  const [tradeMode, setTradeMode] = useState<"buy" | "sell" | "swap">("buy");
-  const [tradeCoin, setTradeCoin] = useState("bitcoin"), [tradeAmount, setTradeAmount] = useState("100"), [quoteVisible, setQuoteVisible] = useState(false);
-  const [swapCoin, setSwapCoin] = useState("ethereum");
   const active = coins.find(c => c.id === selected) || coins[0];
-  const tradeAsset = coins.find(c => c.id === tradeCoin), swapAsset = coins.find(c => c.id === swapCoin);
   const filtered = useMemo(() => coins.filter(c => `${c.name} ${c.symbol}`.toLowerCase().includes(query.toLowerCase())), [coins, query]);
-  const numericAmount = Number(tradeAmount);
-  const estimated = tradeAsset && numericAmount > 0 ? numericAmount / tradeAsset.current_price : 0;
 
   async function loadMarkets() {
     try {
@@ -106,20 +100,28 @@ export default function App() {
         </aside>
       </div>
     </section>
-    <section className="trade-section" id="trade"><div className="trade-intro"><div className="eyebrow">02 / TRADE INTERFACE</div><h2>Your next move,<br/><span>clearly considered.</span></h2><p>Explore buy, sell and swap flows with live indicative prices. This preview does not submit orders or move funds.</p><div className="trade-security"><span>✦</span><div><b>Transparent by design</b><small>Live reference prices · No hidden execution</small></div></div></div>
-      <div className="trade-card"><div className="trade-tabs"><button className={tradeMode === "buy" ? "trade-active" : ""} onClick={() => {setTradeMode("buy");setQuoteVisible(false)}}>Buy</button><button className={tradeMode === "sell" ? "trade-active" : ""} onClick={() => {setTradeMode("sell");setQuoteVisible(false)}}>Sell</button><button className={tradeMode === "swap" ? "trade-active" : ""} onClick={() => {setTradeMode("swap");setQuoteVisible(false)}}>Exchange</button></div>
-        <div className="trade-form"><label>{tradeMode === "swap" ? "YOU PAY" : tradeMode === "buy" ? "PAY WITH (USD)" : "SELL AMOUNT (USD)"}</label><div className="amount-field"><input inputMode="decimal" value={tradeAmount} onChange={e => {setTradeAmount(e.target.value);setQuoteVisible(false)}} aria-label="Trade amount"/><span>USD</span></div>
-          <label>{tradeMode === "swap" ? "FROM ASSET" : "SELECT ASSET"}</label><div className="asset-select"><select value={tradeCoin} onChange={e => {setTradeCoin(e.target.value);setQuoteVisible(false)}}>{coins.map(c => <option key={c.id} value={c.id}>{c.name} ({c.symbol.toUpperCase()})</option>)}</select><b>{tradeAsset ? money(tradeAsset.current_price) : "Loading price"}</b></div>
-          {tradeMode === "swap" && <><div className="swap-divider">↓</div><label>RECEIVE ASSET</label><div className="asset-select"><select value={swapCoin} onChange={e => {setSwapCoin(e.target.value);setQuoteVisible(false)}}>{coins.filter(c => c.id !== tradeCoin).map(c => <option key={c.id} value={c.id}>{c.name} ({c.symbol.toUpperCase()})</option>)}</select><b>{swapAsset ? money(swapAsset.current_price) : "Loading price"}</b></div></>}
-          <div className="estimate"><span>INDICATIVE {tradeMode === "swap" ? "RECEIVE" : tradeMode === "buy" ? "YOU RECEIVE" : "ASSET VALUE"}</span><strong>{tradeMode === "swap" && swapAsset && tradeAsset && numericAmount > 0 ? `${(numericAmount * tradeAsset.current_price / swapAsset.current_price).toLocaleString("en-US",{maximumFractionDigits:8})} ${swapAsset.symbol.toUpperCase()}` : tradeAsset && numericAmount > 0 ? `${estimated.toLocaleString("en-US",{maximumFractionDigits:8})} ${tradeAsset.symbol.toUpperCase()}` : "—"}</strong></div>
-          <button className="quote-btn" disabled={!tradeAsset || !numericAmount || numericAmount <= 0 || (tradeMode === "swap" && (!swapAsset || swapAsset.current_price <= 0))} onClick={() => setQuoteVisible(true)}>Preview {tradeMode === "swap" ? "exchange" : tradeMode} <span>→</span></button>
-          {quoteVisible && <div className="quote-message"><b>Indicative preview ready</b><span>Reference price only. No order has been placed and no funds have moved.</span></div>}
-          <p className="trade-footnote">Execution is not enabled. A secure transaction backend, wallet infrastructure and compliance checks are required before real trades can be placed.</p>
+    <section className="investor-section" id="about">
+      <div className="investor-copy">
+        <div className="eyebrow">02 / A GLOBAL MARKETPLACE</div>
+        <h2>See the bigger picture.<br/><span>Understand every move.</span></h2>
+        <p>Join a worldwide community exploring digital assets, market movements and the ideas shaping the future of finance.</p>
+        <a className="primary-btn" href="#markets">Explore global markets <span>→</span></a>
+        <div className="investor-points"><span>GLOBAL PERSPECTIVE</span><span>MARKET INSIGHTS</span><span>ONE CONNECTED COMMUNITY</span></div>
+      </div>
+      <div className="investor-visual">
+        <img src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1400&q=85" alt="International business professionals collaborating around a table"/>
+        <div className="investor-shade"></div>
+        <div className="analyst-screen">
+          <div className="screen-top"><span>GLOBAL MARKET OVERVIEW</span><i>LIVE INSIGHTS</i></div>
+          <div className="screen-title">Digital asset market</div>
+          <div className="screen-chart"><svg viewBox="0 0 520 170" role="img" aria-label="Illustrative rising and falling market chart"><path d="M0 135 L55 116 L95 128 L145 80 L190 98 L235 60 L275 83 L320 44 L365 65 L405 26 L455 48 L520 10" fill="none" stroke="#e3bd72" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/><path d="M0 135 L55 116 L95 128 L145 80 L190 98 L235 60 L275 83 L320 44 L365 65 L405 26 L455 48 L520 10 L520 170 L0 170Z" fill="url(#marketArea)" opacity=".22"/><defs><linearGradient id="marketArea" x1="0" x2="0" y1="0" y2="1"><stop stopColor="#e3bd72"/><stop offset="1" stopColor="#e3bd72" stopOpacity="0"/></linearGradient></defs></svg></div>
+          <div className="screen-bottom"><span>MARKET TRENDS</span><b>GLOBAL · DIGITAL ASSETS</b></div>
         </div>
+        <div className="investor-caption">INSIGHT. CONNECTION. GLOBAL PERSPECTIVE.</div>
       </div>
     </section>
-    <section className="about-section" id="about"><div className="eyebrow">03 / ITAL NOVA CRYPTO</div><h2>Clarity for a market<br/><span>that never stands still.</span></h2><p>Stay informed, explore the digital asset ecosystem and make decisions with care. Crypto assets are volatile; always research the risks.</p><a className="primary-btn" href={telegramUrl} target="_blank" rel="noreferrer">Join the community ↗</a></section>
+    <section className="about-section" id="about"><div className="eyebrow">03 / ITAL NOVA CRYPTO</div><h2>Clarity for a market<br/><span>that never stands still.</span></h2><p>Explore the digital asset ecosystem, follow market developments and stay connected to a worldwide community.</p><a className="primary-btn" href={telegramUrl} target="_blank" rel="noreferrer">Join the community ↗</a></section>
     <footer><a className="brand" href="#home"><span className="brand-icon">IN</span><span>ITAL NOVA <b>CRYPTO</b></span></a><span>© {new Date().getFullYear()} ITAL NOVA CRYPTO</span><span>Market data: CoinGecko</span><a href={telegramUrl} target="_blank" rel="noreferrer">Telegram ↗</a></footer>
-    <div className="disclaimer">Cryptocurrency markets are volatile. Prices and charts are supplied by CoinGecko and may be delayed or temporarily unavailable. Trade controls currently provide indicative previews only; no live orders, custody or transfers are available. Nothing on this site is financial advice.</div>
+    <div className="disclaimer">Market prices and charts are supplied by CoinGecko and may be delayed or temporarily unavailable. ITAL NOVA CRYPTO provides market information and educational tools.</div>
   </main>;
 }
