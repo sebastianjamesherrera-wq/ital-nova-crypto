@@ -69,7 +69,7 @@ export default function App() {
     <section className="hero">
       <div className="hero-content"><div className="eyebrow"><i/> THE NEXT PERSPECTIVE ON DIGITAL ASSETS</div>
         <h1>Move with the<br/><span>market, not the noise.</span></h1>
-        <p>A global destination for cryptocurrency market intelligence. Explore live digital-asset prices, understand market movements and follow the data behind the headlines.</p>
+        <p>Notizie crypto, aggiornamenti su Bitcoin, analisi di mercato e formazione. ITAL NOVA CRYPTO è una piattaforma internazionale dedicata all’intelligenza dei mercati digitali, con dati aggiornati e approfondimenti per comprendere l’evoluzione delle criptovalute.</p>
         <a className="primary-btn" href="#markets">Explore the markets <span>↓</span></a>
       </div>
       <div className="hero-orbit"><div className="orbit-core">₿</div><span className="orbit-coin orbit-btc">₿</span><span className="orbit-coin orbit-eth">◆</span><span className="orbit-coin orbit-sol">◎</span></div>
