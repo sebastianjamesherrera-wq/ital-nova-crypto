@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 
 const telegramUrl = "https://t.me/ItalNovaCrypto";
 
@@ -15,7 +15,7 @@ const faqs = [
   { q: "Fornite consulenza finanziaria?", a: "No. Tutti i contenuti hanno scopo esclusivamente informativo ed educativo. Fai sempre le tue ricerche (DYOR) prima di investire." },
 ];
 
-function TelegramButton({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+function TelegramButton({ children, className = "" }: { children: ReactNode; className?: string }) {
   return <a className={className} href={telegramUrl} target="_blank" rel="noopener noreferrer">{children}</a>;
 }
 
