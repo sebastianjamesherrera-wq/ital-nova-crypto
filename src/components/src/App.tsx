@@ -31,6 +31,10 @@ export default function App() {
   const [global, setGlobal] = useState<{ total_market_cap?: { usd: number }; total_volume?: { usd: number }; market_cap_change_percentage_24h_usd?: number; active_cryptocurrencies?: number } | null>(null);
   const active = coins.find(c => c.id === selected) || coins[0];
   const filtered = useMemo(() => coins.filter(c => `${c.name} ${c.symbol}`.toLowerCase().includes(query.toLowerCase())), [coins, query]);
+  const gainers = useMemo(() => [...coins].filter(c => Number.isFinite(c.price_change_percentage_24h)).sort((a,b) => b.price_change_percentage_24h - a.price_change_percentage_24h).slice(0,5), [coins]);
+  const decliners = useMemo(() => [...coins].filter(c => Number.isFinite(c.price_change_percentage_24h)).sort((a,b) => a.price_change_percentage_24h - b.price_change_percentage_24h).slice(0,5), [coins]);
+  const advancing = coins.filter(c => (c.price_change_percentage_24h || 0) > 0).length;
+  const declining = coins.filter(c => (c.price_change_percentage_24h || 0) < 0).length;
 
   async function loadMarkets() {
     try {
@@ -99,6 +103,15 @@ export default function App() {
           <p className="chart-note">Source: CoinGecko public market API. Historical market prices are informational, not a trading recommendation.</p>
         </aside>
       </div>
+    </section>
+    <section className="intelligence-section" aria-labelledby="intelligence-title">
+      <div className="section-heading"><div><div className="eyebrow">02 / MARKET PULSE</div><h2 id="intelligence-title">Read the market.<br/><span>Beyond the headline.</span></h2><p>Live market breadth and the strongest 24-hour moves across the assets we track.</p></div><div className="pulse-status"><i/> BASED ON LIVE 24H DATA</div></div>
+      <div className="intelligence-grid">
+        <article className="breadth-card"><div className="intel-label">MARKET BREADTH · TOP 50 ASSETS</div><div className="breadth-numbers"><strong className="up">{advancing}</strong><span>ADVANCING</span><strong className="down">{declining}</strong><span>DECLINING</span></div><div className="breadth-track"><span style={{width: `${coins.length ? advancing / coins.length * 100 : 0}%`}}/><i style={{width: `${coins.length ? declining / coins.length * 100 : 0}%`}}/></div><p>Share of tracked assets with positive or negative 24-hour performance. Flat assets are not counted in either side.</p></article>
+        <article className="movers-card"><div className="intel-label">TOP 24H GAINERS</div>{loading ? <p className="mover-empty">Waiting for market data…</p> : gainers.map(c => <div className="mover-row" key={c.id}><img src={c.image} alt=""/><span><b>{c.name}</b><small>{c.symbol.toUpperCase()}</small></span><strong className="up">{pct(c.price_change_percentage_24h)}</strong></div>)}</article>
+        <article className="movers-card"><div className="intel-label">TOP 24H DECLINERS</div>{loading ? <p className="mover-empty">Waiting for market data…</p> : decliners.map(c => <div className="mover-row" key={c.id}><img src={c.image} alt=""/><span><b>{c.name}</b><small>{c.symbol.toUpperCase()}</small></span><strong className="down">{pct(c.price_change_percentage_24h)}</strong></div>)}</article>
+      </div>
+      <p className="intel-source">Source: CoinGecko market API · Rankings reflect the tracked top 50 by market capitalisation and are informational only.</p>
     </section>
     <section className="investor-section" id="insights">
       <div className="investor-copy">
