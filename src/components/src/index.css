@@ -155,3 +155,11 @@ footer{background:#08090b}
 .intel-source{font-size:9px;color:#77736c;line-height:1.7;margin:18px 0 0}
 @media(max-width:900px){.intelligence-grid{grid-template-columns:1fr 1fr}.breadth-card{grid-column:1/-1}}
 @media(max-width:600px){.intelligence-section{padding:72px 5vw}.intelligence-grid{grid-template-columns:1fr}.breadth-card{grid-column:auto}.pulse-status{font-size:8px}.breadth-numbers strong{font-size:36px}}
+
+
+/* Global intelligence upgrade */
+.structure-section{padding:76px 7vw 84px;background:#0d0e10;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.structure-heading{display:flex;align-items:end;justify-content:space-between;gap:30px;margin-bottom:28px}.structure-heading h2{font-size:clamp(29px,4vw,43px);letter-spacing:-.055em;margin:13px 0 0}.structure-heading p{max-width:330px;color:var(--muted);font-size:11px;line-height:1.8;margin:0 0 4px}
+.structure-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px}.structure-grid article{min-width:0;padding:21px 20px;background:linear-gradient(145deg,#171614,#101113);border:1px solid rgba(223,189,118,.17);border-radius:10px;display:flex;flex-direction:column;gap:12px;transition:transform .25s,border-color .25s}.structure-grid article:hover{transform:translateY(-3px);border-color:rgba(223,189,118,.4)}.structure-grid article>span{font:9px 'DM Mono',monospace;letter-spacing:.1em;color:#a79a7e;min-height:24px}.structure-grid article strong{font-size:clamp(18px,2.2vw,25px);letter-spacing:-.045em;color:#f1e5cc;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}.structure-grid article small{font-size:9px;color:#858078;line-height:1.5}.result-count{display:block;color:#888178;font:9px 'DM Mono',monospace;margin-top:6px}.table-toolbar>div{min-width:0}.table-toolbar input{flex-shrink:0}.table-scroll tbody tr:focus{outline:2px solid var(--gold);outline-offset:-2px}
+@media(max-width:900px){.structure-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.structure-heading{align-items:flex-start;flex-direction:column;gap:12px}}
+@media(max-width:600px){.structure-section{padding:65px 5vw}.structure-grid{gap:9px}.structure-grid article{padding:16px 13px;gap:9px}.structure-grid article>span{font-size:8px}.structure-grid article strong{font-size:19px}.structure-heading h2{font-size:31px}.table-toolbar{gap:12px}.table-toolbar>div{width:100%}}
