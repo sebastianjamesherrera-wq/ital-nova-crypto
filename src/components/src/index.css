@@ -61,3 +61,50 @@ tbody tr:hover{background:rgba(216,182,106,.09)}
 .about-section{padding:100px 12vw;background:radial-gradient(ellipse at 80% 30%,rgba(216,182,106,.08),transparent 42%)}
 @media(max-width:850px){.trade-section{grid-template-columns:1fr;padding:75px 7vw;gap:35px}.trade-card{max-width:560px;width:100%}.about-section{padding:75px 7vw}}
 @media(prefers-reduced-motion:reduce){.hero-orbit{animation:none}}
+
+
+/* Premium motion and interaction polish */
+:root{--gold:#dfbd76;--line:rgba(223,189,118,.14)}
+::selection{background:rgba(223,189,118,.28);color:#fff}
+.topbar{border-bottom-color:rgba(223,189,118,.16);box-shadow:0 8px 35px rgba(0,0,0,.18)}
+.brand{letter-spacing:.16em}
+.brand-icon{box-shadow:0 0 22px rgba(223,189,118,.12);transition:transform .3s,box-shadow .3s}
+.brand:hover .brand-icon{transform:rotate(-8deg) scale(1.06);box-shadow:0 0 28px rgba(223,189,118,.28)}
+.topbar nav a{transition:color .2s}
+.hero{isolation:isolate;min-height:660px;background:radial-gradient(ellipse at 76% 42%,rgba(193,148,72,.2),transparent 34%),radial-gradient(ellipse at 18% 90%,rgba(117,83,37,.13),transparent 40%),linear-gradient(118deg,#08090b 0%,#11110f 52%,#19140d 100%)}
+.hero:before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.17;background-image:linear-gradient(rgba(223,189,118,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(223,189,118,.08) 1px,transparent 1px);background-size:58px 58px;mask-image:linear-gradient(to bottom,black,transparent 88%)}
+.hero-content{animation:heroEnter .9s cubic-bezier(.2,.7,.2,1) both}
+.hero h1{max-width:760px;text-wrap:balance}
+.hero p{max-width:490px}
+.hero-orbit{filter:drop-shadow(0 20px 55px rgba(0,0,0,.3))}
+.orbit-coin{box-shadow:0 8px 30px rgba(0,0,0,.35);animation:coinFloat 4s ease-in-out infinite}
+.orbit-eth{animation-delay:-1.3s}.orbit-sol{animation-delay:-2.5s}
+.hero-foot{border-color:rgba(223,189,118,.18)}
+.market-strip{background:linear-gradient(100deg,#111214,#17140f 55%,#101114);position:relative}
+.market-strip>div{padding:7px 0;transition:transform .25s}
+.market-strip>div:hover{transform:translateY(-3px)}
+.market-strip strong{font-variant-numeric:tabular-nums}
+.markets-section{background:linear-gradient(180deg,#08090b,#0b0c0e 48%,#08090b)}
+.section-heading h2,.trade-intro h2,.about-section h2{ text-wrap:balance}
+.table-panel,.chart-panel,.trade-card{box-shadow:0 20px 70px rgba(0,0,0,.22);transition:border-color .25s,transform .25s,box-shadow .25s}
+.table-panel:hover,.chart-panel:hover{border-color:rgba(223,189,118,.27);box-shadow:0 25px 80px rgba(0,0,0,.3)}
+tbody tr{transition:background .2s,transform .2s}
+tbody tr:focus-visible,button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.asset-name img,.chart-head h3 img{box-shadow:0 0 0 1px rgba(255,255,255,.1)}
+.chart-wrap{overflow:hidden}
+.chart-svg{filter:drop-shadow(0 4px 8px rgba(223,189,118,.12));animation:chartEnter .6s ease both}
+.range-tabs button,.trade-tabs button,.quote-btn,.updated button{transition:all .2s ease}
+.range-tabs button:hover{color:#fff;background:rgba(223,189,118,.1)}
+.trade-section{background:radial-gradient(ellipse at 82% 48%,rgba(173,127,54,.12),transparent 38%),linear-gradient(125deg,#0b0c0f,#15120d);position:relative;overflow:hidden}
+.trade-section:before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(110deg,transparent 35%,rgba(223,189,118,.035),transparent 70%)}
+.trade-intro,.trade-card{position:relative}
+.trade-card:hover{border-color:rgba(223,189,118,.4);transform:translateY(-3px);box-shadow:0 30px 90px rgba(0,0,0,.4)}
+.amount-field:focus-within,.asset-select:focus-within{border-color:rgba(223,189,118,.55);box-shadow:0 0 0 3px rgba(223,189,118,.07)}
+.quote-btn:not(:disabled):hover{filter:brightness(1.13);transform:translateY(-1px);box-shadow:0 8px 25px rgba(223,189,118,.16)}
+.about-section{background:radial-gradient(ellipse at 80% 30%,rgba(216,182,106,.1),transparent 42%),#090a0c}
+footer{background:#08090b}
+@keyframes heroEnter{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+@keyframes coinFloat{0%,100%{translate:0 0}50%{translate:0 -9px}}
+@keyframes chartEnter{from{opacity:.35;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:700px){.hero{min-height:620px}.hero-orbit{animation:none}.market-strip>div{min-width:0}.trade-card:hover{transform:none}}
+@media(prefers-reduced-motion:reduce){.hero-content,.orbit-coin,.chart-svg{animation:none!important}.brand-icon,.table-panel,.chart-panel,.trade-card,tbody tr{transition:none!important}}
