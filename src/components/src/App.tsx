@@ -28,13 +28,15 @@ export default function App() {
   const [selected, setSelected] = useState("bitcoin"), [days, setDays] = useState("1"), [points, setPoints] = useState<Point[]>([]);
   const [query, setQuery] = useState(""), [loading, setLoading] = useState(true), [chartLoading, setChartLoading] = useState(true);
   const [error, setError] = useState(""), [lastUpdated, setLastUpdated] = useState<Date | null>(null);
-  const [global, setGlobal] = useState<{ total_market_cap?: { usd: number }; total_volume?: { usd: number }; market_cap_change_percentage_24h_usd?: number; active_cryptocurrencies?: number } | null>(null);
+  const [global, setGlobal] = useState<{ total_market_cap?: { usd: number }; total_volume?: { usd: number }; market_cap_change_percentage_24h_usd?: number; active_cryptocurrencies?: number; market_cap_percentage?: { btc?: number; eth?: number } } | null>(null);
   const active = coins.find(c => c.id === selected) || coins[0];
   const filtered = useMemo(() => coins.filter(c => `${c.name} ${c.symbol}`.toLowerCase().includes(query.toLowerCase())), [coins, query]);
   const gainers = useMemo(() => [...coins].filter(c => Number.isFinite(c.price_change_percentage_24h)).sort((a,b) => b.price_change_percentage_24h - a.price_change_percentage_24h).slice(0,5), [coins]);
   const decliners = useMemo(() => [...coins].filter(c => Number.isFinite(c.price_change_percentage_24h)).sort((a,b) => a.price_change_percentage_24h - b.price_change_percentage_24h).slice(0,5), [coins]);
   const advancing = coins.filter(c => (c.price_change_percentage_24h || 0) > 0).length;
   const declining = coins.filter(c => (c.price_change_percentage_24h || 0) < 0).length;
+  const trackedCap = coins.reduce((sum, coin) => sum + (coin.market_cap || 0), 0);
+  const trackedVolume = coins.reduce((sum, coin) => sum + (coin.total_volume || 0), 0);
 
   async function loadMarkets() {
     try {
@@ -63,7 +65,7 @@ export default function App() {
 
   return <main id="home">
     <header className="topbar"><a className="brand" href="#home"><span className="brand-icon">IN</span><span>ITAL NOVA <b>CRYPTO</b></span></a>
-      <nav><a href="#markets">Markets</a><a href="#insights">Insights</a><a href="#about">About</a></nav>
+      <nav><a href="#markets">Markets</a><a href="#intelligence">Intelligence</a><a href="#insights">About</a></nav>
       <a className="community-link" href={telegramUrl} target="_blank" rel="noreferrer">Join community ↗</a>
     </header>
     <section className="hero">
@@ -81,19 +83,20 @@ export default function App() {
       <div><span>GLOBAL MARKET CHANGE</span><strong className={(global?.market_cap_change_percentage_24h_usd || 0) >= 0 ? "up" : "down"}>{pct(global?.market_cap_change_percentage_24h_usd)}</strong></div>
       <div><span>ACTIVE CRYPTOCURRENCIES</span><strong>{global ? compact(global.active_cryptocurrencies) : "Loading…"}</strong></div>
     </section>
+    <section className="structure-section" aria-label="Market structure"><div className="structure-heading"><div><div className="eyebrow">GLOBAL MARKET STRUCTURE</div><h2>Capital, <span>concentration & flow.</span></h2></div><p>Reference metrics from the global market feed and the 50 assets tracked below.</p></div><div className="structure-grid"><article><span>BITCOIN DOMINANCE</span><strong>{global?.market_cap_percentage?.btc != null ? `${global.market_cap_percentage.btc.toFixed(2)}%` : "—"}</strong><small>Share of total crypto market cap</small></article><article><span>ETHEREUM DOMINANCE</span><strong>{global?.market_cap_percentage?.eth != null ? `${global.market_cap_percentage.eth.toFixed(2)}%` : "—"}</strong><small>Share of total crypto market cap</small></article><article><span>TRACKED MARKET CAPITALISATION</span><strong>{trackedCap ? money(trackedCap) : "—"}</strong><small>Combined top 50 assets</small></article><article><span>TRACKED 24H VOLUME</span><strong>{trackedVolume ? money(trackedVolume) : "—"}</strong><small>Combined top 50 assets</small></article></div></section>
     <section className="markets-section" id="markets">
       <div className="section-heading"><div><div className="eyebrow">01 / THE MARKET</div><h2>Every move, <span>in view.</span></h2><p>Explore market prices, performance and historical trends.</p></div>
         <div className="updated">{lastUpdated ? `Updated ${lastUpdated.toLocaleTimeString()}` : "Connecting to market data"}<span className="live-dot"/> <button onClick={loadMarkets} aria-label="Refresh market data">↻</button></div>
       </div>
       {error && <div className="error-banner">{error} <button onClick={loadMarkets}>Retry</button></div>}
       <div className="market-layout">
-        <div className="table-panel"><div className="table-toolbar"><h3>Top cryptocurrencies</h3><input value={query} onChange={e => setQuery(e.target.value)} placeholder="Search assets…" aria-label="Search cryptocurrencies"/></div>
+        <div className="table-panel"><div className="table-toolbar"><div><h3>Top 50 cryptocurrencies</h3><small className="result-count">{filtered.length} assets tracked</small></div><input value={query} onChange={e => setQuery(e.target.value)} placeholder="Search assets…" aria-label="Search cryptocurrencies"/></div>
           <div className="table-scroll"><table><thead><tr><th>#</th><th>Asset</th><th>Price</th><th>24H</th><th>Volume (24H)</th><th>Market cap</th></tr></thead>
-            <tbody>{loading ? <tr><td colSpan={6} className="empty-cell">Loading live assets…</td></tr> : filtered.slice(0, 20).map((coin, i) => <tr key={coin.id} className={active?.id === coin.id ? "selected-row" : ""} onClick={() => setSelected(coin.id)} tabIndex={0} onKeyDown={e => e.key === "Enter" && setSelected(coin.id)}>
+            <tbody>{loading ? <tr><td colSpan={6} className="empty-cell">Loading live assets…</td></tr> : filtered.map((coin, i) => <tr key={coin.id} className={active?.id === coin.id ? "selected-row" : ""} onClick={() => setSelected(coin.id)} tabIndex={0} onKeyDown={e => e.key === "Enter" && setSelected(coin.id)}>
               <td className="rank">{coin.market_cap_rank || i + 1}</td><td><div className="asset-name"><img src={coin.image} alt=""/><span><b>{coin.name}</b><small>{coin.symbol.toUpperCase()}</small></span></div></td>
               <td className="price-cell">{money(coin.current_price)}</td><td className={(coin.price_change_percentage_24h || 0) >= 0 ? "up" : "down"}>{pct(coin.price_change_percentage_24h)}</td><td>{money(coin.total_volume)}</td><td>{money(coin.market_cap)}</td>
             </tr>)}</tbody></table></div>
-          <div className="table-foot">Choose an asset to inspect its chart. Data refreshes every 60 seconds.</div>
+          <div className="table-foot">Select any asset to inspect its historical chart. The market feed refreshes automatically every 60 seconds.</div>
         </div>
         <aside className="chart-panel"><div className="chart-head"><div><span>ASSET OVERVIEW</span><h3>{active ? <><img src={active.image} alt=""/>{active.name}</> : "Select an asset"}</h3></div>{active && <strong>{money(active.current_price)}</strong>}</div>
           {active && <div className="chart-change"><span className={(active.price_change_percentage_24h || 0) >= 0 ? "up" : "down"}>{pct(active.price_change_percentage_24h)} <small>24H</small></span><span>Market rank #{active.market_cap_rank}</span></div>}
@@ -104,7 +107,7 @@ export default function App() {
         </aside>
       </div>
     </section>
-    <section className="intelligence-section" aria-labelledby="intelligence-title">
+    <section className="intelligence-section" id="intelligence" aria-labelledby="intelligence-title">
       <div className="section-heading"><div><div className="eyebrow">02 / MARKET PULSE</div><h2 id="intelligence-title">Read the market.<br/><span>Beyond the headline.</span></h2><p>Live market breadth and the strongest 24-hour moves across the assets we track.</p></div><div className="pulse-status"><i/> BASED ON LIVE 24H DATA</div></div>
       <div className="intelligence-grid">
         <article className="breadth-card"><div className="intel-label">MARKET BREADTH · TOP 50 ASSETS</div><div className="breadth-numbers"><strong className="up">{advancing}</strong><span>ADVANCING</span><strong className="down">{declining}</strong><span>DECLINING</span></div><div className="breadth-track"><span style={{width: `${coins.length ? advancing / coins.length * 100 : 0}%`}}/><i style={{width: `${coins.length ? declining / coins.length * 100 : 0}%`}}/></div><p>Share of tracked assets with positive or negative 24-hour performance. Flat assets are not counted in either side.</p></article>
@@ -115,7 +118,7 @@ export default function App() {
     </section>
     <section className="investor-section" id="insights">
       <div className="investor-copy">
-        <div className="eyebrow">02 / GLOBAL MARKET INTELLIGENCE</div>
+        <div className="eyebrow">03 / GLOBAL MARKET INTELLIGENCE</div>
         <h2>See the bigger picture.<br/><span>Understand the market.</span></h2>
         <p>Explore the forces shaping digital assets with a clear global perspective, live market data and accessible financial analysis.</p>
         <a className="primary-btn" href={telegramUrl} target="_blank" rel="noreferrer">Get updates on Telegram <span>↗</span></a>
@@ -133,8 +136,8 @@ export default function App() {
         <div className="investor-caption">INSIGHT. CONNECTION. GLOBAL PERSPECTIVE.</div>
       </div>
     </section>
-    <section className="about-section" id="about"><div className="eyebrow">03 / STAY CONNECTED</div><h2>Market insight here.<br/><span>Updates on Telegram.</span></h2><p>ITAL NOVA CRYPTO shares market intelligence on this website. For announcements, community discussions and ongoing updates, join our official Telegram channel. Telegram is our dedicated updates channel.</p><a className="primary-btn" href={telegramUrl} target="_blank" rel="noreferrer">Join our official Telegram <span>↗</span></a></section>
+    <section className="about-section" id="about"><div className="eyebrow">04 / STAY CONNECTED</div><h2>Market insight here.<br/><span>Updates on Telegram.</span></h2><p>ITAL NOVA CRYPTO shares market intelligence on this website. For announcements, community discussions and ongoing updates, join our official Telegram channel. Telegram is our dedicated updates channel.</p><a className="primary-btn" href={telegramUrl} target="_blank" rel="noreferrer">Join our official Telegram <span>↗</span></a></section>
     <footer><a className="brand" href="#home"><span className="brand-icon">IN</span><span>ITAL NOVA <b>CRYPTO</b></span></a><span>© {new Date().getFullYear()} ITAL NOVA CRYPTO</span><span>Market data: CoinGecko</span><a href={telegramUrl} target="_blank" rel="noreferrer">Official Telegram ↗</a></footer>
-    <div className="disclaimer">Market prices and charts are supplied by CoinGecko and may be delayed or temporarily unavailable. ITAL NOVA CRYPTO provides market information and educational tools.</div>
+    <div className="disclaimer">Market data is provided by CoinGecko and may be delayed or temporarily unavailable. Figures are presented for market information and education. ITAL NOVA CRYPTO does not provide trading execution or financial advice.</div>
   </main>;
 }
