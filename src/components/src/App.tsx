@@ -100,7 +100,7 @@ export default function App() {
         </aside>
       </div>
     </section>
-    <section className="investor-section" id="about">
+    <section className="investor-section" id="investors">
       <div className="investor-copy">
         <div className="eyebrow">02 / A GLOBAL MARKETPLACE</div>
         <h2>See the bigger picture.<br/><span>Understand every move.</span></h2>
