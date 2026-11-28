@@ -1,143 +1,109 @@
-import { useEffect, useMemo, useState } from "react";
+import { useState } from "react";
 
-const API = "https://api.coingecko.com/api/v3";
 const telegramUrl = "https://t.me/ItalNovaCrypto";
-type Coin = { id: string; symbol: string; name: string; image: string; current_price: number; market_cap: number; market_cap_rank: number; total_volume: number; high_24h: number; low_24h: number; price_change_percentage_24h: number; sparkline_in_7d?: { price: number[] } };
-type Point = [number, number];
-const ranges = [{ label: "24H", days: "1" }, { label: "7D", days: "7" }, { label: "1M", days: "30" }, { label: "1Y", days: "365" }];
-const money = (n?: number) => n == null ? "—" : new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: n < 1 ? 6 : 2 }).format(n);
-const compact = (n?: number) => n == null ? "—" : new Intl.NumberFormat("en-US", { notation: "compact", maximumFractionDigits: 2 }).format(n);
-const pct = (n?: number) => n == null ? "—" : `${n >= 0 ? "+" : ""}${n.toFixed(2)}%`;
 
-function LineChart({ points }: { points: Point[] }) {
-  if (!points.length) return <div className="chart-empty">Waiting for market chart data…</div>;
-  const values = points.map(p => p[1]), min = Math.min(...values), max = Math.max(...values), span = max - min || 1;
-  const coords = values.map((v, i) => [i / Math.max(values.length - 1, 1) * 1000, 190 - (v - min) / span * 165]);
-  const path = coords.map((p, i) => `${i ? "L" : "M"} ${p[0].toFixed(1)} ${p[1].toFixed(1)}`).join(" ");
-  const positive = values[values.length - 1] >= values[0];
-  return <svg className="chart-svg" viewBox="0 0 1000 210" preserveAspectRatio="none" role="img" aria-label="Selected cryptocurrency price history">
-    <defs><linearGradient id="chartFill" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stopColor={positive ? "#d8b66a" : "#ff7777"} stopOpacity=".24"/><stop offset="100%" stopColor={positive ? "#d8b66a" : "#ff7777"} stopOpacity="0"/></linearGradient></defs>
-    {[45, 95, 145, 195].map(y => <line key={y} x1="0" x2="1000" y1={y} y2={y} stroke="rgba(255,255,255,.08)" strokeDasharray="4 8"/>)}
-    <path d={`${path} L 1000 210 L 0 210 Z`} fill="url(#chartFill)"/>
-    <path d={path} fill="none" stroke={positive ? "#d8b66a" : "#ff7777"} strokeWidth="3" vectorEffect="non-scaling-stroke"/>
-  </svg>;
+const features = [
+  { icon: "📰", title: "Notizie Crypto", tone: "green", text: "Le news più importanti dal mondo blockchain, regolamentazioni e adozione istituzionale tradotte e spiegate in italiano." },
+  { icon: "₿", title: "Aggiornamenti Bitcoin", tone: "gold", text: "Monitoraggio costante su BTC, livelli chiave di prezzo, dati on-chain e movimenti macroeconomici rilevanti." },
+  { icon: "📊", title: "Analisi di Mercato", tone: "blue", text: "Struttura dei mercati, trend delle principali altcoin e scenari di mercato raccontati con chiarezza e obiettività." },
+  { icon: "🎓", title: "Formazione", tone: "purple", text: "Guide pratiche, gestione del rischio, sicurezza dei wallet e basi fondamentali per principianti ed esperti." },
+];
+
+const faqs = [
+  { q: "L'accesso al canale Telegram è gratuito?", a: "Sì, l'accesso a ITALNOVA CRYPTO su Telegram è completamente gratuito. Ti basta cliccare sul pulsante per unirti subito." },
+  { q: "È adatto anche a chi parte da zero?", a: "Assolutamente sì. Pubblichiamo contenuti formativi chiari per comprendere le basi di Bitcoin, blockchain e gestione del rischio." },
+  { q: "Fornite consulenza finanziaria?", a: "No. Tutti i contenuti hanno scopo esclusivamente informativo ed educativo. Fai sempre le tue ricerche (DYOR) prima di investire." },
+];
+
+function TelegramButton({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  return <a className={className} href={telegramUrl} target="_blank" rel="noopener noreferrer">{children}</a>;
 }
 
 export default function App() {
-  const [coins, setCoins] = useState<Coin[]>([]);
-  const [selected, setSelected] = useState("bitcoin"), [days, setDays] = useState("1"), [points, setPoints] = useState<Point[]>([]);
-  const [query, setQuery] = useState(""), [loading, setLoading] = useState(true), [chartLoading, setChartLoading] = useState(true);
-  const [error, setError] = useState(""), [lastUpdated, setLastUpdated] = useState<Date | null>(null);
-  const [global, setGlobal] = useState<{ total_market_cap?: { usd: number }; total_volume?: { usd: number }; market_cap_change_percentage_24h_usd?: number; active_cryptocurrencies?: number; market_cap_percentage?: { btc?: number; eth?: number } } | null>(null);
-  const active = coins.find(c => c.id === selected) || coins[0];
-  const filtered = useMemo(() => coins.filter(c => `${c.name} ${c.symbol}`.toLowerCase().includes(query.toLowerCase())), [coins, query]);
-  const gainers = useMemo(() => [...coins].filter(c => Number.isFinite(c.price_change_percentage_24h)).sort((a,b) => b.price_change_percentage_24h - a.price_change_percentage_24h).slice(0,5), [coins]);
-  const decliners = useMemo(() => [...coins].filter(c => Number.isFinite(c.price_change_percentage_24h)).sort((a,b) => a.price_change_percentage_24h - b.price_change_percentage_24h).slice(0,5), [coins]);
-  const advancing = coins.filter(c => (c.price_change_percentage_24h || 0) > 0).length;
-  const declining = coins.filter(c => (c.price_change_percentage_24h || 0) < 0).length;
-  const trackedCap = coins.reduce((sum, coin) => sum + (coin.market_cap || 0), 0);
-  const trackedVolume = coins.reduce((sum, coin) => sum + (coin.total_volume || 0), 0);
+  const [menuOpen, setMenuOpen] = useState(false);
 
-  async function loadMarkets() {
-    try {
-      const [marketRes, globalRes] = await Promise.all([
-        fetch(`${API}/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=50&page=1&sparkline=true&price_change_percentage=24h`),
-        fetch(`${API}/global`)
-      ]);
-      if (!marketRes.ok) throw new Error("Live market data is temporarily unavailable. Please try again shortly.");
-      const marketData = await marketRes.json(); setCoins(marketData);
-      if (globalRes.ok) { const g = await globalRes.json(); setGlobal(g.data); }
-      setLastUpdated(new Date()); setError("");
-    } catch (e) { setError(e instanceof Error ? e.message : "Could not load live market data."); }
-    finally { setLoading(false); }
-  }
-  useEffect(() => { loadMarkets(); const timer = window.setInterval(loadMarkets, 60000); return () => window.clearInterval(timer); }, []);
-  useEffect(() => {
-    if (!active) return;
-    let cancelled = false; setChartLoading(true);
-    fetch(`${API}/coins/${active.id}/market_chart?vs_currency=usd&days=${days}`)
-      .then(r => { if (!r.ok) throw new Error("Chart unavailable"); return r.json(); })
-      .then(data => { if (!cancelled) setPoints(data.prices || []); })
-      .catch(() => { if (!cancelled) setPoints([]); })
-      .finally(() => { if (!cancelled) setChartLoading(false); });
-    return () => { cancelled = true; };
-  }, [active?.id, days]);
+  return (
+    <main id="inizio">
+      <header className="site-header">
+        <div className="header-inner">
+          <a href="#inizio" className="brand" aria-label="ITALNOVA CRYPTO home"><span className="flag">🇮🇹</span><span>ITALNOVA <b>CRYPTO</b></span></a>
+          <button className="menu-toggle" aria-label="Apri menu" aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? "✕" : "☰"}</button>
+          <nav className={menuOpen ? "main-nav open" : "main-nav"} aria-label="Navigazione principale">
+            <a href="#funzionalita" onClick={() => setMenuOpen(false)}>Cosa Offriamo</a>
+            <a href="#anteprima" onClick={() => setMenuOpen(false)}>Canale</a>
+            <a href="#faq" onClick={() => setMenuOpen(false)}>FAQ</a>
+          </nav>
+          <TelegramButton className="header-cta">Unisciti su Telegram 🚀</TelegramButton>
+        </div>
+      </header>
 
-  return <main id="home">
-    <header className="topbar"><a className="brand" href="#home"><span className="brand-icon">IN</span><span>ITAL NOVA <b>CRYPTO</b></span></a>
-      <nav><a href="#markets">Markets</a><a href="#intelligence">Intelligence</a><a href="#insights">About</a></nav>
-      <a className="community-link" href={telegramUrl} target="_blank" rel="noreferrer">Join community ↗</a>
-    </header>
-    <section className="hero">
-      <div className="hero-content"><div className="eyebrow"><i/> THE NEXT PERSPECTIVE ON DIGITAL ASSETS</div>
-        <h1>Move with the<br/><span>market, not the noise.</span></h1>
-        <p>Notizie crypto, aggiornamenti su Bitcoin, analisi di mercato e formazione. ITAL NOVA CRYPTO è una piattaforma internazionale dedicata all’intelligenza dei mercati digitali, con dati aggiornati e approfondimenti per comprendere l’evoluzione delle criptovalute.</p>
-        <a className="primary-btn" href="#markets">Explore the markets <span>↓</span></a>
-      </div>
-      <div className="hero-orbit"><div className="orbit-core">₿</div><span className="orbit-coin orbit-btc">₿</span><span className="orbit-coin orbit-eth">◆</span><span className="orbit-coin orbit-sol">◎</span></div>
-      <div className="hero-foot"><span>MARKET DATA · COINGECKO</span><span>MARKET DATA · AUTOMATIC REFRESH</span></div>
-    </section>
-    <section className="market-strip" aria-label="Global market overview">
-      <div><span>GLOBAL CRYPTO MARKET CAP</span><strong>{global ? money(global.total_market_cap?.usd) : "Loading…"}</strong></div>
-      <div><span>24H MARKET VOLUME</span><strong>{global ? money(global.total_volume?.usd) : "Loading…"}</strong></div>
-      <div><span>GLOBAL MARKET CHANGE</span><strong className={(global?.market_cap_change_percentage_24h_usd || 0) >= 0 ? "up" : "down"}>{pct(global?.market_cap_change_percentage_24h_usd)}</strong></div>
-      <div><span>ACTIVE CRYPTOCURRENCIES</span><strong>{global ? compact(global.active_cryptocurrencies) : "Loading…"}</strong></div>
-    </section>
-    <section className="structure-section" aria-label="Market structure"><div className="structure-heading"><div><div className="eyebrow">GLOBAL MARKET STRUCTURE</div><h2>Capital, <span>concentration & flow.</span></h2></div><p>Reference metrics from the global market feed and the 50 assets tracked below.</p></div><div className="structure-grid"><article><span>BITCOIN DOMINANCE</span><strong>{global?.market_cap_percentage?.btc != null ? `${global.market_cap_percentage.btc.toFixed(2)}%` : "—"}</strong><small>Share of total crypto market cap</small></article><article><span>ETHEREUM DOMINANCE</span><strong>{global?.market_cap_percentage?.eth != null ? `${global.market_cap_percentage.eth.toFixed(2)}%` : "—"}</strong><small>Share of total crypto market cap</small></article><article><span>TRACKED MARKET CAPITALISATION</span><strong>{trackedCap ? money(trackedCap) : "—"}</strong><small>Combined top 50 assets</small></article><article><span>TRACKED 24H VOLUME</span><strong>{trackedVolume ? money(trackedVolume) : "—"}</strong><small>Combined top 50 assets</small></article></div></section>
-    <section className="markets-section" id="markets">
-      <div className="section-heading"><div><div className="eyebrow">01 / THE MARKET</div><h2>Every move, <span>in view.</span></h2><p>Explore market prices, performance and historical trends.</p></div>
-        <div className="updated">{lastUpdated ? `Updated ${lastUpdated.toLocaleTimeString()}` : "Connecting to market data"}<span className="live-dot"/> <button onClick={loadMarkets} aria-label="Refresh market data">↻</button></div>
-      </div>
-      {error && <div className="error-banner">{error} <button onClick={loadMarkets}>Retry</button></div>}
-      <div className="market-layout">
-        <div className="table-panel"><div className="table-toolbar"><div><h3>Top 50 cryptocurrencies</h3><small className="result-count">{filtered.length} assets tracked</small></div><input value={query} onChange={e => setQuery(e.target.value)} placeholder="Search assets…" aria-label="Search cryptocurrencies"/></div>
-          <div className="table-scroll"><table><thead><tr><th>#</th><th>Asset</th><th>Price</th><th>24H</th><th>Volume (24H)</th><th>Market cap</th></tr></thead>
-            <tbody>{loading ? <tr><td colSpan={6} className="empty-cell">Loading live assets…</td></tr> : filtered.map((coin, i) => <tr key={coin.id} className={active?.id === coin.id ? "selected-row" : ""} onClick={() => setSelected(coin.id)} tabIndex={0} onKeyDown={e => e.key === "Enter" && setSelected(coin.id)}>
-              <td className="rank">{coin.market_cap_rank || i + 1}</td><td><div className="asset-name"><img src={coin.image} alt=""/><span><b>{coin.name}</b><small>{coin.symbol.toUpperCase()}</small></span></div></td>
-              <td className="price-cell">{money(coin.current_price)}</td><td className={(coin.price_change_percentage_24h || 0) >= 0 ? "up" : "down"}>{pct(coin.price_change_percentage_24h)}</td><td>{money(coin.total_volume)}</td><td>{money(coin.market_cap)}</td>
-            </tr>)}</tbody></table></div>
-          <div className="table-foot">Select any asset to inspect its historical chart. The market feed refreshes automatically every 60 seconds.</div>
+      <section className="hero">
+        <div className="hero-glow hero-glow-one" /><div className="hero-glow hero-glow-two" />
+        <div className="hero-grid" />
+        <div className="hero-content">
+          <div className="community-pill"><span className="pulse-dot" /> Community Crypto Italiana <i /> 100% Gratuita</div>
+          <h1>Il tuo punto di riferimento per <span>Bitcoin</span>, Mercati e Formazione Crypto</h1>
+          <p>📊 Notizie crypto, aggiornamenti su Bitcoin, analisi di mercato e formazione per comprendere il mondo degli asset digitali con maggiore consapevolezza.</p>
+          <div className="hero-actions">
+            <TelegramButton className="primary-cta">Entra nel Canale Telegram <span>→</span></TelegramButton>
+            <a className="secondary-cta" href="#funzionalita">Scopri i Contenuti</a>
+          </div>
+          <div className="hero-note"><span>ITALNOVA CRYPTO</span><span>INFORMAZIONE · ANALISI · FORMAZIONE</span></div>
         </div>
-        <aside className="chart-panel"><div className="chart-head"><div><span>ASSET OVERVIEW</span><h3>{active ? <><img src={active.image} alt=""/>{active.name}</> : "Select an asset"}</h3></div>{active && <strong>{money(active.current_price)}</strong>}</div>
-          {active && <div className="chart-change"><span className={(active.price_change_percentage_24h || 0) >= 0 ? "up" : "down"}>{pct(active.price_change_percentage_24h)} <small>24H</small></span><span>Market rank #{active.market_cap_rank}</span></div>}
-          <div className="range-tabs">{ranges.map(r => <button key={r.days} className={days === r.days ? "range-active" : ""} onClick={() => setDays(r.days)}>{r.label}</button>)}</div>
-          <div className="chart-wrap">{chartLoading ? <div className="chart-empty">Loading chart…</div> : <LineChart points={points}/>}</div>
-          {active && <div className="chart-stats"><div><span>24H HIGH / LOW</span><b>{money(active.high_24h)} / {money(active.low_24h)}</b></div><div><span>24H VOLUME</span><b>{money(active.total_volume)}</b></div></div>}
-          <p className="chart-note">Source: CoinGecko public market API. Historical market prices are informational, not a trading recommendation.</p>
-        </aside>
-      </div>
-    </section>
-    <section className="intelligence-section" id="intelligence" aria-labelledby="intelligence-title">
-      <div className="section-heading"><div><div className="eyebrow">02 / MARKET PULSE</div><h2 id="intelligence-title">Read the market.<br/><span>Beyond the headline.</span></h2><p>Live market breadth and the strongest 24-hour moves across the assets we track.</p></div><div className="pulse-status"><i/> BASED ON LIVE 24H DATA</div></div>
-      <div className="intelligence-grid">
-        <article className="breadth-card"><div className="intel-label">MARKET BREADTH · TOP 50 ASSETS</div><div className="breadth-numbers"><strong className="up">{advancing}</strong><span>ADVANCING</span><strong className="down">{declining}</strong><span>DECLINING</span></div><div className="breadth-track"><span style={{width: `${coins.length ? advancing / coins.length * 100 : 0}%`}}/><i style={{width: `${coins.length ? declining / coins.length * 100 : 0}%`}}/></div><p>Share of tracked assets with positive or negative 24-hour performance. Flat assets are not counted in either side.</p></article>
-        <article className="movers-card"><div className="intel-label">TOP 24H GAINERS</div>{loading ? <p className="mover-empty">Waiting for market data…</p> : gainers.map(c => <div className="mover-row" key={c.id}><img src={c.image} alt=""/><span><b>{c.name}</b><small>{c.symbol.toUpperCase()}</small></span><strong className="up">{pct(c.price_change_percentage_24h)}</strong></div>)}</article>
-        <article className="movers-card"><div className="intel-label">TOP 24H DECLINERS</div>{loading ? <p className="mover-empty">Waiting for market data…</p> : decliners.map(c => <div className="mover-row" key={c.id}><img src={c.image} alt=""/><span><b>{c.name}</b><small>{c.symbol.toUpperCase()}</small></span><strong className="down">{pct(c.price_change_percentage_24h)}</strong></div>)}</article>
-      </div>
-      <p className="intel-source">Source: CoinGecko market API · Rankings reflect the tracked top 50 by market capitalisation and are informational only.</p>
-    </section>
-    <section className="investor-section" id="insights">
-      <div className="investor-copy">
-        <div className="eyebrow">03 / GLOBAL MARKET INTELLIGENCE</div>
-        <h2>See the bigger picture.<br/><span>Understand the market.</span></h2>
-        <p>Explore the forces shaping digital assets with a clear global perspective, live market data and accessible financial analysis.</p>
-        <a className="primary-btn" href={telegramUrl} target="_blank" rel="noreferrer">Get updates on Telegram <span>↗</span></a>
-        <div className="investor-points"><span>GLOBAL PERSPECTIVE</span><span>MARKET INSIGHTS</span><span>TELEGRAM COMMUNITY UPDATES</span></div>
-      </div>
-      <div className="investor-visual">
-        <img src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1400&q=85" alt="International business professionals collaborating around a table"/>
-        <div className="investor-shade"></div>
-        <div className="analyst-screen">
-          <div className="screen-top"><span>GLOBAL MARKET OVERVIEW</span><i>LIVE INSIGHTS</i></div>
-          <div className="screen-title">Digital asset market</div>
-          <div className="screen-chart"><svg viewBox="0 0 520 170" role="img" aria-label="Illustrative rising and falling market chart"><path d="M0 135 L55 116 L95 128 L145 80 L190 98 L235 60 L275 83 L320 44 L365 65 L405 26 L455 48 L520 10" fill="none" stroke="#e3bd72" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/><path d="M0 135 L55 116 L95 128 L145 80 L190 98 L235 60 L275 83 L320 44 L365 65 L405 26 L455 48 L520 10 L520 170 L0 170Z" fill="url(#marketArea)" opacity=".22"/><defs><linearGradient id="marketArea" x1="0" x2="0" y1="0" y2="1"><stop stopColor="#e3bd72"/><stop offset="1" stopColor="#e3bd72" stopOpacity="0"/></linearGradient></defs></svg></div>
-          <div className="screen-bottom"><span>MARKET TRENDS</span><b>GLOBAL · DIGITAL ASSETS</b></div>
+        <div className="hero-art" aria-hidden="true">
+          <div className="orbit orbit-outer" /><div className="orbit orbit-middle" /><div className="orbit orbit-inner" />
+          <div className="bitcoin-core">₿</div><div className="floating-coin coin-one">₿</div><div className="floating-coin coin-two">◆</div><div className="floating-coin coin-three">◎</div>
+          <div className="art-caption">DIGITAL ASSET INTELLIGENCE <span>●</span></div>
         </div>
-        <div className="investor-caption">INSIGHT. CONNECTION. GLOBAL PERSPECTIVE.</div>
-      </div>
-    </section>
-    <section className="about-section" id="about"><div className="eyebrow">04 / STAY CONNECTED</div><h2>Market insight here.<br/><span>Updates on Telegram.</span></h2><p>ITAL NOVA CRYPTO shares market intelligence on this website. For announcements, community discussions and ongoing updates, join our official Telegram channel. Telegram is our dedicated updates channel.</p><a className="primary-btn" href={telegramUrl} target="_blank" rel="noreferrer">Join our official Telegram <span>↗</span></a></section>
-    <footer><a className="brand" href="#home"><span className="brand-icon">IN</span><span>ITAL NOVA <b>CRYPTO</b></span></a><span>© {new Date().getFullYear()} ITAL NOVA CRYPTO</span><span>Market data: CoinGecko</span><a href={telegramUrl} target="_blank" rel="noreferrer">Official Telegram ↗</a></footer>
-    <div className="disclaimer">Market data is provided by CoinGecko and may be delayed or temporarily unavailable. Figures are presented for market information and education. ITAL NOVA CRYPTO does not provide trading execution or financial advice.</div>
-  </main>;
+      </section>
+
+      <section className="features-section" id="funzionalita">
+        <div className="section-intro">
+          <span className="eyebrow">IL NOSTRO MONDO</span>
+          <h2>Tutto ciò che trovi su <span>ITALNOVA CRYPTO</span></h2>
+          <p>Informazioni selezionate per aiutarti a orientarti nel panorama delle criptovalute.</p>
+        </div>
+        <div className="features-grid">
+          {features.map((feature) => <article className={`feature-card ${feature.tone}`} key={feature.title}>
+            <div className="feature-icon">{feature.icon}</div><h3>{feature.title}</h3><p>{feature.text}</p><span className="card-line" />
+          </article>)}
+        </div>
+      </section>
+
+      <section className="telegram-section" id="anteprima">
+        <div className="telegram-card">
+          <div className="telegram-top">
+            <div className="telegram-identity"><div className="telegram-avatar">IN</div><div><h3>🇮🇹 ITALNOVA CRYPTO 🚀</h3><p>@ItalNovaCrypto · Canale Ufficiale</p></div></div>
+            <TelegramButton className="telegram-open">Apri su Telegram ↗</TelegramButton>
+          </div>
+          <div className="telegram-message">
+            <div className="message-mark">₿</div><div><span className="message-label gold-label">IL MONDO BITCOIN</span><h4>Aggiornamenti e analisi</h4><p>Approfondimenti sul mercato Bitcoin, dati e temi che aiutano a comprendere i movimenti del settore.</p></div>
+          </div>
+          <div className="telegram-message">
+            <div className="message-mark education-mark">✦</div><div><span className="message-label green-label">FORMAZIONE CRYPTO</span><h4>Impara, comprendi, approfondisci</h4><p>Contenuti educativi, guide e concetti chiave del mondo blockchain spiegati in modo accessibile.</p></div>
+          </div>
+          <div className="telegram-bottom"><span><i className="pulse-dot" /> COMMUNITY UFFICIALE</span><TelegramButton>Unisciti alla community →</TelegramButton></div>
+        </div>
+      </section>
+
+      <section className="faq-section" id="faq">
+        <div className="section-intro"><span className="eyebrow">HAI DELLE DOMANDE?</span><h2>Domande <span>Frequenti</span></h2><p>Le informazioni essenziali sulla nostra community.</p></div>
+        <div className="faq-list">{faqs.map((faq, index) => <details className="faq-item" key={faq.q}><summary><span className="faq-number">0{index + 1}</span>{faq.q}<span className="faq-plus">+</span></summary><p>{faq.a}</p></details>)}</div>
+      </section>
+
+      <section className="final-cta">
+        <div className="cta-glow" /><span className="eyebrow">RESTA CONNESSO</span>
+        <h2>Pronto a restare un passo avanti nel <span>mondo crypto?</span></h2>
+        <p>Unisciti alla community italiana di ITALNOVA CRYPTO su Telegram.</p>
+        <TelegramButton className="primary-cta">Unisciti a ITALNOVA CRYPTO 🚀 <span>↗</span></TelegramButton>
+      </section>
+
+      <footer className="site-footer">
+        <a href="#inizio" className="brand"><span className="flag">🇮🇹</span><span>ITALNOVA <b>CRYPTO</b></span></a>
+        <p>© {new Date().getFullYear()} ITALNOVA CRYPTO. Tutti i diritti riservati.</p>
+        <TelegramButton className="footer-link">Canale Telegram ↗</TelegramButton>
+        <p className="disclaimer">Disclaimer: I contenuti pubblicati su ITALNOVA CRYPTO hanno finalità esclusivamente informative ed educative e non costituiscono consulenza finanziaria o sollecitazione all'investimento.</p>
+      </footer>
+    </main>
+  );
 }
