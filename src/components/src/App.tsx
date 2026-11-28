@@ -59,17 +59,17 @@ export default function App() {
 
   return <main id="home">
     <header className="topbar"><a className="brand" href="#home"><span className="brand-icon">IN</span><span>ITAL NOVA <b>CRYPTO</b></span></a>
-      <nav><a href="#markets">Markets</a><a href="#trade">Trade</a><a href="#about">About</a></nav>
+      <nav><a href="#markets">Markets</a><a href="#insights">Insights</a><a href="#about">About</a></nav>
       <a className="community-link" href={telegramUrl} target="_blank" rel="noreferrer">Join community ↗</a>
     </header>
     <section className="hero">
       <div className="hero-content"><div className="eyebrow"><i/> THE NEXT PERSPECTIVE ON DIGITAL ASSETS</div>
         <h1>Move with the<br/><span>market, not the noise.</span></h1>
-        <p>A refined space to explore digital assets, follow live market movements and preview your next crypto trade.</p>
+        <p>A global destination for cryptocurrency market intelligence. Explore live digital-asset prices, understand market movements and follow the data behind the headlines.</p>
         <a className="primary-btn" href="#markets">Explore the markets <span>↓</span></a>
       </div>
       <div className="hero-orbit"><div className="orbit-core">₿</div><span className="orbit-coin orbit-btc">₿</span><span className="orbit-coin orbit-eth">◆</span><span className="orbit-coin orbit-sol">◎</span></div>
-      <div className="hero-foot"><span>MARKET DATA · COINGECKO</span><span>REFRESHED EVERY 60 SECONDS</span></div>
+      <div className="hero-foot"><span>MARKET DATA · COINGECKO</span><span>MARKET DATA · AUTOMATIC REFRESH</span></div>
     </section>
     <section className="market-strip" aria-label="Global market overview">
       <div><span>GLOBAL CRYPTO MARKET CAP</span><strong>{global ? money(global.total_market_cap?.usd) : "Loading…"}</strong></div>
@@ -100,13 +100,13 @@ export default function App() {
         </aside>
       </div>
     </section>
-    <section className="investor-section" id="investors">
+    <section className="investor-section" id="insights">
       <div className="investor-copy">
-        <div className="eyebrow">02 / A GLOBAL MARKETPLACE</div>
-        <h2>See the bigger picture.<br/><span>Understand every move.</span></h2>
-        <p>Join a worldwide community exploring digital assets, market movements and the ideas shaping the future of finance.</p>
-        <a className="primary-btn" href="#markets">Explore global markets <span>→</span></a>
-        <div className="investor-points"><span>GLOBAL PERSPECTIVE</span><span>MARKET INSIGHTS</span><span>ONE CONNECTED COMMUNITY</span></div>
+        <div className="eyebrow">02 / GLOBAL MARKET INTELLIGENCE</div>
+        <h2>See the bigger picture.<br/><span>Understand the market.</span></h2>
+        <p>Explore the forces shaping digital assets with a clear global perspective, live market data and accessible financial analysis.</p>
+        <a className="primary-btn" href={telegramUrl} target="_blank" rel="noreferrer">Get updates on Telegram <span>↗</span></a>
+        <div className="investor-points"><span>GLOBAL PERSPECTIVE</span><span>MARKET INSIGHTS</span><span>TELEGRAM COMMUNITY UPDATES</span></div>
       </div>
       <div className="investor-visual">
         <img src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1400&q=85" alt="International business professionals collaborating around a table"/>
@@ -120,8 +120,8 @@ export default function App() {
         <div className="investor-caption">INSIGHT. CONNECTION. GLOBAL PERSPECTIVE.</div>
       </div>
     </section>
-    <section className="about-section" id="about"><div className="eyebrow">03 / ITAL NOVA CRYPTO</div><h2>Clarity for a market<br/><span>that never stands still.</span></h2><p>Explore the digital asset ecosystem, follow market developments and stay connected to a worldwide community.</p><a className="primary-btn" href={telegramUrl} target="_blank" rel="noreferrer">Join the community ↗</a></section>
-    <footer><a className="brand" href="#home"><span className="brand-icon">IN</span><span>ITAL NOVA <b>CRYPTO</b></span></a><span>© {new Date().getFullYear()} ITAL NOVA CRYPTO</span><span>Market data: CoinGecko</span><a href={telegramUrl} target="_blank" rel="noreferrer">Telegram ↗</a></footer>
+    <section className="about-section" id="about"><div className="eyebrow">03 / STAY CONNECTED</div><h2>Market insight here.<br/><span>Updates on Telegram.</span></h2><p>ITAL NOVA CRYPTO shares market intelligence on this website. For announcements, community discussions and ongoing updates, join our official Telegram channel. Telegram is our dedicated updates channel.</p><a className="primary-btn" href={telegramUrl} target="_blank" rel="noreferrer">Join our official Telegram <span>↗</span></a></section>
+    <footer><a className="brand" href="#home"><span className="brand-icon">IN</span><span>ITAL NOVA <b>CRYPTO</b></span></a><span>© {new Date().getFullYear()} ITAL NOVA CRYPTO</span><span>Market data: CoinGecko</span><a href={telegramUrl} target="_blank" rel="noreferrer">Official Telegram ↗</a></footer>
     <div className="disclaimer">Market prices and charts are supplied by CoinGecko and may be delayed or temporarily unavailable. ITAL NOVA CRYPTO provides market information and educational tools.</div>
   </main>;
 }
