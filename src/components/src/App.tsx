@@ -23,7 +23,6 @@ const translations = {
     faqs: [
       ["L'accesso al canale Telegram è gratuito?", "Sì, l'accesso a ITALNOVA CRYPTO su Telegram è completamente gratuito. Ti basta cliccare sul pulsante per unirti subito."],
       ["È adatto anche a chi parte da zero?", "Assolutamente sì. Pubblichiamo contenuti formativi chiari per comprendere le basi di Bitcoin, blockchain e gestione del rischio."],
-      ["Fornite consulenza finanziaria?", "No. Tutti i contenuti hanno scopo esclusivamente informativo ed educativo. Fai sempre le tue ricerche (DYOR) prima di investire."]
     ],
     stay: "RESTA CONNESSO", finalTitle: "Pronto a restare un passo avanti nel mondo crypto?", finalText: "Unisciti alla community italiana di ITALNOVA CRYPTO su Telegram.",
     finalJoin: "Unisciti a ITALNOVA CRYPTO 🚀", rights: "Tutti i diritti riservati.", telegram: "Canale Telegram",
@@ -49,7 +48,6 @@ const translations = {
     faqs: [
       ["Is the Telegram channel free?", "Yes, joining ITALNOVA CRYPTO on Telegram is completely free. Simply click the button to join."],
       ["Is it suitable for complete beginners?", "Absolutely. We publish clear educational content covering the basics of Bitcoin, blockchain and risk awareness."],
-      ["Do you provide financial advice?", "No. All content is for informational and educational purposes only and is not financial advice. Always do your own research (DYOR)."]
     ],
     stay: "STAY CONNECTED", finalTitle: "Ready to stay one step ahead in crypto?", finalText: "Join the ITALNOVA CRYPTO community on Telegram.",
     finalJoin: "Join ITALNOVA CRYPTO 🚀", rights: "All rights reserved.", telegram: "Telegram Channel",
@@ -75,7 +73,6 @@ const translations = {
     faqs: [
       ["L'accès au canal Telegram est-il gratuit ?", "Oui, l'accès à ITALNOVA CRYPTO sur Telegram est entièrement gratuit. Cliquez simplement sur le bouton pour nous rejoindre."],
       ["Est-ce adapté aux débutants ?", "Bien sûr. Nous publions des contenus pédagogiques clairs sur les bases du Bitcoin, de la blockchain et la sensibilisation aux risques."],
-      ["Fournissez-vous des conseils financiers ?", "Non. Nos contenus sont uniquement informatifs et éducatifs et ne constituent pas un conseil financier. Faites toujours vos propres recherches."]
     ],
     stay: "RESTEZ CONNECTÉ", finalTitle: "Prêt à garder une longueur d'avance dans la crypto ?", finalText: "Rejoignez la communauté ITALNOVA CRYPTO sur Telegram.",
     finalJoin: "Rejoindre ITALNOVA CRYPTO 🚀", rights: "Tous droits réservés.", telegram: "Canal Telegram",
@@ -101,7 +98,6 @@ const translations = {
     faqs: [
       ["¿Es gratuito el canal de Telegram?", "Sí, unirse a ITALNOVA CRYPTO en Telegram es totalmente gratis. Solo tienes que pulsar el botón para entrar."],
       ["¿Es adecuado para principiantes?", "Por supuesto. Publicamos contenido educativo claro sobre Bitcoin, blockchain y conciencia del riesgo."],
-      ["¿Ofrecéis asesoramiento financiero?", "No. Todo el contenido es exclusivamente informativo y educativo y no constituye asesoramiento financiero. Investiga siempre por tu cuenta."]
     ],
     stay: "MANTENTE CONECTADO", finalTitle: "¿Listo para estar un paso adelante en el mundo cripto?", finalText: "Únete a la comunidad ITALNOVA CRYPTO en Telegram.",
     finalJoin: "Únete a ITALNOVA CRYPTO 🚀", rights: "Todos los derechos reservados.", telegram: "Canal de Telegram",
@@ -127,7 +123,6 @@ const translations = {
     faqs: [
       ["Ist der Telegram-Kanal kostenlos?", "Ja, der Zugang zu ITALNOVA CRYPTO auf Telegram ist vollständig kostenlos. Klicken Sie einfach auf die Schaltfläche, um beizutreten."],
       ["Ist das Angebot für Anfänger geeignet?", "Auf jeden Fall. Wir veröffentlichen verständliche Bildungsinhalte zu Bitcoin, Blockchain und Risikobewusstsein."],
-      ["Bieten Sie Finanzberatung an?", "Nein. Alle Inhalte dienen ausschließlich Informations- und Bildungszwecken und sind keine Finanzberatung. Recherchieren Sie immer selbst."]
     ],
     stay: "BLEIBEN SIE VERBUNDEN", finalTitle: "Bereit, der Krypto-Welt einen Schritt voraus zu sein?", finalText: "Werden Sie Teil der ITALNOVA CRYPTO Community auf Telegram.",
     finalJoin: "ITALNOVA CRYPTO beitreten 🚀", rights: "Alle Rechte vorbehalten.", telegram: "Telegram-Kanal",
